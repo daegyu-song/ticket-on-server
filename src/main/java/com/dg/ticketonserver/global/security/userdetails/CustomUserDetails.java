@@ -3,6 +3,7 @@ package com.dg.ticketonserver.global.security.userdetails;
 import com.dg.ticketonserver.user.domain.Role;
 import com.dg.ticketonserver.user.domain.User;
 import jakarta.annotation.Nullable;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,35 +11,44 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@Getter
 public class CustomUserDetails implements UserDetails {
 
-    private final User user;
+    private final Long id;
+    private final String username;
+    private final String password;
+    private final Role role;
 
-    public CustomUserDetails(User user) {
-        this.user = user;
+    private CustomUserDetails(User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.role = user.getRole();
+    }
+
+    private CustomUserDetails(Long id, Role role) {
+        this.id = id;
+        this.username = null;
+        this.password = null;
+        this.role = role;
+    }
+
+    public static CustomUserDetails from(User user) {
+        return new CustomUserDetails(user);
+    }
+
+    public static CustomUserDetails of(Long id, Role role) {
+        return new CustomUserDetails(id, role);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
     public @Nullable String getPassword() {
-        return user.getPassword();
-    }
-
-    @Override
-    public String getUsername() {
-        return user.getUsername();
-    }
-
-    public Long getId() {
-        return user.getId();
-    }
-
-    public Role getRole() {
-        return user.getRole();
+        return password;
     }
 
     @Override

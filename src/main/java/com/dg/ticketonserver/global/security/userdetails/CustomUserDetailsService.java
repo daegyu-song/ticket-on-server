@@ -19,6 +19,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
 
-        return new CustomUserDetails(user);
+        return CustomUserDetails.from(user);
     }
 }
