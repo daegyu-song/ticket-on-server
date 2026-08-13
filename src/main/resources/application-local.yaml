@@ -7,6 +7,9 @@ spring:
       hibernate:
         format_sql: true
 
+cookie:
+  secure: false
+
 #logging:
 #  level:
 #    org.hibernate.SQL: debug
