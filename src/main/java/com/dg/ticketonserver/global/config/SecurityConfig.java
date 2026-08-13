@@ -1,5 +1,6 @@
 package com.dg.ticketonserver.global.config;
 
+import com.dg.ticketonserver.auth.repository.TokenBlacklistRepository;
 import com.dg.ticketonserver.global.security.filter.JwtAuthenticationFilter;
 import com.dg.ticketonserver.global.security.filter.LoginFilter;
 import com.dg.ticketonserver.global.security.handler.JwtAccessDeniedHandler;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -32,6 +34,7 @@ public class SecurityConfig {
 
     private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
+    private final TokenBlacklistRepository tokenBlacklistRepository;
     private final CustomUserDetailsService customUserDetailsService;
     private final LoginSuccessHandler loginSuccessHandler;
     private final LoginFailureHandler loginFailureHandler;
@@ -48,6 +51,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -58,7 +62,7 @@ public class SecurityConfig {
                 )
 
                 .addFilterAt(loginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, tokenBlacklistRepository), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

@@ -3,11 +3,14 @@ package com.dg.ticketonserver.auth.controller;
 import com.dg.ticketonserver.auth.dto.request.SignupRequest;
 import com.dg.ticketonserver.auth.dto.response.TokenResponse;
 import com.dg.ticketonserver.auth.service.AuthService;
+import com.dg.ticketonserver.global.security.userdetails.CustomUserDetails;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,5 +32,11 @@ public class AuthController {
             HttpServletResponse response
     ) {
         return ResponseEntity.ok(TokenResponse.of(authService.reissue(refreshToken, response)));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        authService.logout(request, response, userDetails.getId());
+        return ResponseEntity.noContent().build();
     }
 }

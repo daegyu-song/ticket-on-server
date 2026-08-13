@@ -31,6 +31,7 @@ public class JwtProvider {
         Date expireDate = new Date(now.getTime() + jwtProperties.accessExpiration().toMillis());
 
         return Jwts.builder()
+                .id(UUID.randomUUID().toString())
                 .subject(String.valueOf(id))
                 .claim("role", role.name())
                 .claim("tokenType", "ACCESS")
