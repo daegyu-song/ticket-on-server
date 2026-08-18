@@ -11,6 +11,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 
@@ -70,6 +71,13 @@ public class GlobalExceptionHandler {
         log.warn("지원하지 않는 Content-Type: {}", e.getContentType());
 
         return toResponse(CommonErrorCode.UNSUPPORTED_MEDIA_TYPE);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
+        log.warn("파라미터 타입 불일치: {} = {}", e.getName(), e.getValue());
+
+        return toResponse(CommonErrorCode.INVALID_INPUT);
     }
 
     @ExceptionHandler(Exception.class)
