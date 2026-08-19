@@ -2,6 +2,7 @@ package com.dg.ticketonserver.global.exception;
 
 import com.dg.ticketonserver.auth.exception.AuthErrorCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -78,6 +79,13 @@ public class GlobalExceptionHandler {
         log.warn("파라미터 타입 불일치: {} = {}", e.getName(), e.getValue());
 
         return toResponse(CommonErrorCode.INVALID_INPUT);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException e) {
+        log.warn("데이터 무결성 위반: {}", e.getMostSpecificCause().getMessage());
+
+        return toResponse(CommonErrorCode.CONFLICT);
     }
 
     @ExceptionHandler(Exception.class)
