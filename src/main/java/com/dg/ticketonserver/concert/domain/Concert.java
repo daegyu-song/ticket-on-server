@@ -33,4 +33,6 @@ public class Concert extends BaseTimeEntity {
 
     @Column(nullable = false)
     private LocalDate endDate;
+
+    private int likeCount;
 }
