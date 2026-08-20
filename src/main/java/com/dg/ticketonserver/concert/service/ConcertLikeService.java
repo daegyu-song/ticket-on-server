@@ -39,10 +39,10 @@ public class ConcertLikeService {
     }
 
     public void unlikeConcert(Long concertId, Long userId) {
+        concertRepository.decreaseLikeCount(concertId);
+
         if (concertLikeRepository.deleteByConcertIdAndUserId(concertId, userId) == 0) {
             throw new BusinessException(ConcertErrorCode.LIKE_NOT_FOUND);
         }
-
-        concertRepository.decreaseLikeCount(concertId);
     }
 }
