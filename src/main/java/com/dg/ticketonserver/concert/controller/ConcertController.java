@@ -24,9 +24,11 @@ public class ConcertController {
     @GetMapping
     public ResponseEntity<PageResponse<ConcertResponse>> getConcerts(
             @PageableDefault(size = 20) Pageable pageable,
-            @RequestParam(defaultValue = "LATEST") ConcertSortType concertSortType
+            @RequestParam(defaultValue = "LATEST") ConcertSortType concertSortType,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        return ResponseEntity.ok(concertService.getConcerts(pageable, concertSortType));
+        Long userId = userDetails == null ? null : userDetails.getId();
+        return ResponseEntity.ok(concertService.getConcerts(pageable, concertSortType, userId));
     }
 
     @PostMapping("/{concertId}/like")

@@ -9,15 +9,19 @@ public record ConcertResponse(
         String title,
         String venue,
         LocalDate startDate,
-        LocalDate endDate
+        LocalDate endDate,
+        int likeCount,
+        boolean liked
 ) {
-    public static ConcertResponse from(Concert concert) {
+    public static ConcertResponse of(Concert concert, boolean liked) {
         return new ConcertResponse(
                 concert.getId(),
                 concert.getTitle(),
                 concert.getVenue(),
                 concert.getStartDate(),
-                concert.getEndDate()
+                concert.getEndDate(),
+                concert.getLikeCount(),
+                liked
         );
     }
 }
