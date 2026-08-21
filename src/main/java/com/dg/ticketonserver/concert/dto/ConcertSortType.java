@@ -8,7 +8,8 @@ import org.springframework.data.domain.Sort;
 @RequiredArgsConstructor
 public enum ConcertSortType {
 
-    LATEST(Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id")));
+    LATEST(Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"))),
+    POPULAR(Sort.by(Sort.Order.desc("likeCount"), Sort.Order.desc("id")));
 
     private final Sort sort;
 }
